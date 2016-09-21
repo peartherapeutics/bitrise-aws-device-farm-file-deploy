@@ -18,13 +18,9 @@ workflows:
         - access_key_id: $AWS_ACCESS_KEY
         - secret_access_key: $AWS_SECRET_KEY
         - device_farm_project: ""
-        - test_package_name: "test_bundle.zip"
-        - test_package_type: "APPIUM_PYTHON_TEST_PACKAGE"
-        - platform: "ios+android"
-        - ios_pool: ""
-        - android_pool: ""
-        - run_name_prefix: "testscript"
-        - aws_region: ""
+        - upload_file_path: ""
+        - upload_type: "APPIUM_PYTHON_TEST_PACKAGE"
+        - aws_region: "us-west-2"
 
   # ----------------------------------------------------------------
   # --- workflow to Release with auto version bump

@@ -1,12 +1,12 @@
-title: "Amazon Device Farm Test Package Deploy"
-summary: "Amazon Device Farm Test Package Deploy"
+title: "Amazon Device Farm File Deploy"
+summary: "Amazon Device Farm File Deploy"
 description: |-
-  Deploys test package to device farm
+  Uploads file (i.e. test package, app data, etc.) to device farm
 
   This Step requires an Amazon Device Farm registration. To register an account, [click here](https://aws.amazon.com/device-farm/)
-website: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy
-source_code_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy
-support_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy/issues
+website: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy
+source_code_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy
+support_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy/issues
 host_os_tags:
   - linux
   - osx-10.9
@@ -44,17 +44,17 @@ inputs:
       summary: ""
       description: "Project ARNs can be obtained using the AWS CLI 'devicefarm list-projects' command."
       is_required: true
-  - test_package_path: "$BITRISE_DEVICE_FARM_TEST_PACKAGE_PATH"
+  - upload_file_path: ""
     opts:
-      title: "Test Package Path"
+      title: "Upload File Path"
       summary: ""
-      description: "Path to test package. aws-device-farm-runner can be configured to use the latest package with this name."
+      description: "Path of file to upload. If this is a test package, aws-device-farm-runner can be configured to use the latest package with this name."
       is_required: true
-  - test_package_type: ""
+  - upload_type: ""
     opts:
-      title: "Test Package Type"
+      title: "Upload Type"
       summary: ""
-      description: "See http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Test.html#devicefarm-Type-Test-type"
+      description: "ex. APPIUM_PYTHON_TEST_PACKAGE. See http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Upload.html#devicefarm-Type-Upload-type"
       is_required: true
   - aws_region: ""
     opts:

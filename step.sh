@@ -91,36 +91,6 @@ function get_upload_status {
     echo "$upload_status"
 }
 
-function device_farm_package_upload {
-    echo_info 'Preparing package upload.'
-    
-    # Intialize upload
-    local test_package_name=$(basename "$test_package_path")
-    local create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$test_package_name" --type="$test_package_type" --query='upload.[arn, url]' --output=text)
-    local package_arn=$(echo $create_upload_response|cut -d' ' -f1)
-    local app_upload_url=$(echo $create_upload_response|cut -d' ' -f2)
-    echo_details "Initialized upload of package '$test_package_path' for package ARN '$package_arn'"
-
-    # Perform upload
-    echo_details "Beginning upload"
-    curl -T "$test_package_path" "$app_upload_url"
-    echo_details "Upload finished. Polling for status."
-
-    # Poll for successful upload
-    local upload_status=$(get_upload_status "$package_arn")
-    echo_details "Upload status: $upload_status"
-    while [ ! "$upload_status" == 'SUCCEEDED' ]; do
-        if [ "$upload_status" == 'FAILED' ]; then
-            echo_fail 'Upload failed!'
-        fi
-
-        echo_details "Upload not yet processed; waiting. (Status=$upload_status)"
-        sleep 10s
-        upload_status=$(get_upload_status "$package_arn")
-    done
-    echo_details 'Upload successful!'
-}
-
 #=======================================
 # Main
 #=======================================
@@ -139,16 +109,16 @@ else
 	echo_details "* secret_access_key: [EMPTY]"
 fi
 echo_details "* device_farm_project: $device_farm_project"
-echo_details "* test_package_path: $test_package_path"
-echo_details "* test_package_type: $test_package_type"
+echo_details "* upload_file_path: $upload_file_path"
+echo_details "* upload_type: $upload_type"
 echo_details "* aws_region: $aws_region"
 echo
 
 validate_required_input "access_key_id" $access_key_id
 validate_required_input "secret_access_key" $secret_access_key
 validate_required_input "device_farm_project" $device_farm_project
-validate_required_input "test_package_path" $test_package_path
-validate_required_input "test_package_type" $test_package_type
+validate_required_input "upload_file_path" $upload_file_path
+validate_required_input "upload_type" $upload_type
 
 if [[ "$aws_region" != "" ]] ; then
 	echo_details "AWS region (${aws_region}) specified!"
@@ -162,4 +132,33 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-device_farm_package_upload
+##### Do upload #######
+
+echo_info 'Preparing package upload.'
+
+# Intialize upload
+test_package_name=$(basename "$upload_file_path")
+create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$test_package_name" --type="$upload_type" --query='upload.[arn, url]' --output=text)
+package_arn=$(echo $create_upload_response|cut -d' ' -f1)
+app_upload_url=$(echo $create_upload_response|cut -d' ' -f2)
+echo_details "Initialized upload of package '$upload_file_path' for package ARN '$package_arn'"
+
+# Perform upload
+echo_details "Beginning upload"
+curl -T "$upload_file_path" "$app_upload_url"
+echo_details "Upload finished. Polling for status."
+
+# Poll for successful upload
+upload_status=$(get_upload_status "$package_arn")
+echo_details "Upload status: $upload_status"
+while [ ! "$upload_status" == 'SUCCEEDED' ]; do
+    if [ "$upload_status" == 'FAILED' ]; then
+        echo_fail 'Upload failed!'
+    fi
+
+    echo_details "Upload not yet processed; waiting. (Status=$upload_status)"
+    sleep 10s
+    upload_status=$(get_upload_status "$package_arn")
+done
+
+echo_details 'Upload successful!'
