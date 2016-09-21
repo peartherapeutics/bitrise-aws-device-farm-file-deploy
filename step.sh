@@ -137,19 +137,19 @@ set -o pipefail
 echo_info 'Preparing package upload.'
 
 # Intialize upload
-test_package_name=$(basename "$upload_file_path")
-create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$test_package_name" --type="$upload_type" --query='upload.[arn, url]' --output=text)
-package_arn=$(echo $create_upload_response|cut -d' ' -f1)
-app_upload_url=$(echo $create_upload_response|cut -d' ' -f2)
-echo_details "Initialized upload of package '$upload_file_path' for package ARN '$package_arn'"
+upload_file_name=$(basename "$upload_file_path")
+create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$upload_file_name" --type="$upload_type" --query='upload.[arn, url]' --output=text)
+upload_arn=$(echo $create_upload_response|cut -d' ' -f1)
+upload_url=$(echo $create_upload_response|cut -d' ' -f2)
+echo_details "Initialized upload of package '$upload_file_path' for package ARN '$upload_arn'"
 
 # Perform upload
 echo_details "Beginning upload"
-curl -T "$upload_file_path" "$app_upload_url"
+curl -T "$upload_file_path" "$upload_url"
 echo_details "Upload finished. Polling for status."
 
 # Poll for successful upload
-upload_status=$(get_upload_status "$package_arn")
+upload_status=$(get_upload_status "$upload_arn")
 echo_details "Upload status: $upload_status"
 while [ ! "$upload_status" == 'SUCCEEDED' ]; do
     if [ "$upload_status" == 'FAILED' ]; then
@@ -158,7 +158,7 @@ while [ ! "$upload_status" == 'SUCCEEDED' ]; do
 
     echo_details "Upload not yet processed; waiting. (Status=$upload_status)"
     sleep 10s
-    upload_status=$(get_upload_status "$package_arn")
+    upload_status=$(get_upload_status "$upload_arn")
 done
 
 echo_details 'Upload successful!'
