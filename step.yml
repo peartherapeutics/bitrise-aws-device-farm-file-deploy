@@ -1,12 +1,12 @@
-title: "Amazon Device Farm Runner"
-summary: "Amazon Device Farm Runner"
+title: "Amazon Device Farm Test Package Deploy"
+summary: "Amazon Device Farm Test Package Deploy"
 description: |-
-  Deploys app to device farm and starts a test run with a preconfigured test package and device pool.
+  Deploys test package to device farm
 
   This Step requires an Amazon Device Farm registration. To register an account, [click here](https://aws.amazon.com/device-farm/)
-website: https://github.com/peartherapeutics/bitrise-aws-device-farm-runner
-source_code_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-runner
-support_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-runner/issues
+website: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy
+source_code_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy
+support_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-test-package-deploy/issues
 host_os_tags:
   - linux
   - osx-10.9
@@ -48,51 +48,13 @@ inputs:
     opts:
       title: "Test Package Filename"
       summary: ""
-      description: "Filename of test package to run, the latest package with this name will be used."
+      description: "Filename of test package, aws-device-farm-runner can be configured to use the latest package with this name."
       is_required: true
-  - test_type: ""
+  - test_package_type: ""
     opts:
-      title: "Test Type"
+      title: "Test Package Type"
       summary: ""
       description: "See http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Test.html#devicefarm-Type-Test-type"
-      is_required: true
-  - platform: ""
-    opts:
-      title: "Platform"
-      summary: ""
-      description: ""
-      value_options:
-        - "ios"
-        - "android"
-        - "ios+android"
-      is_required: true
-  - ipa_path: "$BITRISE_IPA_PATH"
-    opts:
-      title: "IPA file path"
-      description: "Required for iOS runs."
-  - ios_pool: ""
-    opts:
-      title: "Device Farm iOS Device Pool ARN"
-      description: "Required for iOS runs. ARNs can be obtained using the AWS CLI 'devicefarm list-device-pools' command."
-  - apk_path: "$BITRISE_SIGNED_APK_PATH"
-    opts:
-      title: "APK file path"
-      description: "Required for Android runs."
-  - android_pool: ""
-    opts:
-      title: "Device Farm Android Device Pool ARN"
-      description: "Required for Android runs. ARNs can be obtained using the AWS CLI 'devicefarm list-device-pools' command."
-  - run_name_prefix: ""
-    opts:
-      title: "Run Name Prefix"
-      summary: ""
-      description: |
-        If you want to specify a name, this prefix will be used
-        followed by platform and bitrise build number.
-  - build_version: "$BITRISE_BUILD_NUMBER"
-    opts:
-      title: "Build Number"
-      description: "Build number"
       is_required: true
   - aws_region: ""
     opts:

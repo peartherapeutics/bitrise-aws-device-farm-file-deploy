@@ -6,7 +6,6 @@ app:
   # define these in your .bitrise.secrets.yml
   - AWS_ACCESS_KEY: $AWS_ACCESS_KEY
   - AWS_SECRET_KEY: $AWS_SECRET_KEY
-  - BUCKET_NAME: $BUCKET_NAME
   # - BUCKET_REGION: $BUCKET_REGION
 
 workflows:
@@ -20,7 +19,7 @@ workflows:
         - secret_access_key: $AWS_SECRET_KEY
         - device_farm_project: ""
         - test_package_name: "test_bundle.zip"
-        - test_type: "APPIUM_PYTHON"
+        - test_package_type: "APPIUM_PYTHON_TEST_PACKAGE"
         - platform: "ios+android"
         - ios_pool: ""
         - android_pool: ""

@@ -83,24 +83,6 @@ function validate_required_input_with_options {
 	fi
 }
 
-function validate_ios_inputs {
-    validate_required_input "ipa_path" $ipa_path
-    validate_required_input "ios_pool" $ios_pool
-}
-
-function validate_android_inputs {
-    validate_required_input "apk_path" $apk_path
-    validate_required_input "android_pool" $android_pool
-}
-
-function get_test_package_arn {
-    # Get most recent test bundle ARN
-    test_package_arn=$(aws devicefarm list-uploads --arn="$device_farm_project" --query="uploads[?name=='${test_package_name}'] | max_by(@, &created).arn" --no-paginate --output=text)
-    #test_package_arn=''
-
-    echo_details "Got test package ARN:'${test_package_arn}'"
-}
-
 function get_upload_status {
     local upload_arn="$1"
     validate_required_variable "upload_arn" $upload_arn
@@ -170,14 +152,6 @@ function device_farm_run {
     echo_details "Run response: '${run_response}'"
 }
 
-function device_farm_run_ios {
-    device_farm_run ios "$ios_pool" "$ipa_path" IOS_APP
-}
-
-function device_farm_run_android {
-    device_farm_run android "$android_pool" "$apk_path" ANDROID_APP
-}
-
 #=======================================
 # Main
 #=======================================
@@ -197,14 +171,7 @@ else
 fi
 echo_details "* device_farm_project: $device_farm_project"
 echo_details "* test_package_name: $test_package_name"
-echo_details "* test_type: $test_type"
-echo_details "* platform: $platform"
-echo_details "* ipa_path: $ipa_path"
-echo_details "* ios_pool: $ios_pool"
-echo_details "* apk_path: $apk_path"
-echo_details "* android_pool: $android_pool"
-echo_details "* run_name_prefix: $run_name_prefix"
-echo_details "* build_version: $build_version"
+echo_details "* test_package_type: $test_package_type"
 echo_details "* aws_region: $aws_region"
 echo
 
@@ -212,10 +179,7 @@ validate_required_input "access_key_id" $access_key_id
 validate_required_input "secret_access_key" $secret_access_key
 validate_required_input "device_farm_project" $device_farm_project
 validate_required_input "test_package_name" $test_package_name
-validate_required_input "test_type" $test_type
-
-options=("ios"  "android" "ios+android")
-validate_required_input_with_options "platform" $platform "${options[@]}"
+validate_required_input "test_package_type" $test_package_type
 
 if [[ "$aws_region" != "" ]] ; then
 	echo_details "AWS region (${aws_region}) specified!"
@@ -227,24 +191,5 @@ export AWS_SECRET_ACCESS_KEY="${secret_access_key}"
 
 set -o errexit
 set -o pipefail
-
-if [ "$platform" == 'ios' ]; then
-    validate_ios_inputs
-    set -o nounset
-    get_test_package_arn
-    device_farm_run_ios
-elif [ "$platform" == 'android' ]; then
-    validate_android_inputs
-    set -o nounset
-    get_test_package_arn
-    device_farm_run_android
-elif [ "$platform" == 'ios+android' ]; then
-    validate_ios_inputs
-    validate_android_inputs
-    set -o nounset
-    get_test_package_arn
-    device_farm_run_ios
-    device_farm_run_android
-fi
 
 echo_info 'Done!'
