@@ -91,38 +91,23 @@ function get_upload_status {
     echo "$upload_status"
 }
 
-function device_farm_run {
-    local run_platform="$1"
-    local device_pool="$2"
-    local app_package_path="$3"
-    local upload_type="$4"
-
-    echo_info "Setting up device farm run for platform '$run_platform'."
-
-    echo_details "* run_platform: $run_platform"
-    echo_details "* device_pool: $device_pool"
-    echo_details "* app_package_path: $app_package_path"
-    echo_details "* upload_type: $upload_type"
+function device_farm_package_upload {
+    echo_info 'Preparing package upload.'
     
-    validate_required_variable "test_package_arn" $test_package_arn
-    validate_required_variable "device_pool" $device_pool
-    validate_required_variable "app_package_path" $app_package_path
-    validate_required_variable "upload_type" $upload_type
-
     # Intialize upload
-    local app_filename=$(basename "$app_package_path")
-    local create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$app_filename" --type="$upload_type" --query='upload.[arn, url]' --output=text)
-    local app_arn=$(echo $create_upload_response|cut -d' ' -f1)
+    local test_package_name=$(basename "$test_package_path")
+    local create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$test_package_name" --type="$test_package_type" --query='upload.[arn, url]' --output=text)
+    local package_arn=$(echo $create_upload_response|cut -d' ' -f1)
     local app_upload_url=$(echo $create_upload_response|cut -d' ' -f2)
-    echo_details "Initialized upload of package '$app_filename' for app ARN '$app_arn'"
+    echo_details "Initialized upload of package '$test_package_path' for package ARN '$package_arn'"
 
     # Perform upload
     echo_details "Beginning upload"
-    curl -T "$app_package_path" "$app_upload_url"
+    curl -T "$test_package_path" "$app_upload_url"
     echo_details "Upload finished. Polling for status."
 
     # Poll for successful upload
-    local upload_status=$(get_upload_status "$app_arn")
+    local upload_status=$(get_upload_status "$package_arn")
     echo_details "Upload status: $upload_status"
     while [ ! "$upload_status" == 'SUCCEEDED' ]; do
         if [ "$upload_status" == 'FAILED' ]; then
@@ -131,25 +116,9 @@ function device_farm_run {
 
         echo_details "Upload not yet processed; waiting. (Status=$upload_status)"
         sleep 10s
-        upload_status=$(get_upload_status "$app_arn")
+        upload_status=$(get_upload_status "$package_arn")
     done
-    echo_details 'Upload successful! Starting run...'
-
-    # Start run
-    local run_params=(--project-arn="$device_farm_project")
-    run_params+=(--device-pool-arn="$device_pool")
-    run_params+=(--app-arn="$app_arn")
-    run_params+=(--test="{\"type\": \"${test_type}\",\"testPackageArn\": \"${test_package_arn}\",\"parameters\": {\"TestEnvVar\": \"foo\"}}")
-    run_params+=(--output=json)
-
-    if [ ! -z "$run_name_prefix" ]; then
-        local run_name="${run_name_prefix}_${run_platform}_${build_version}"
-        run_params+=(--name="$run_name")
-        echo_details "Using run name '$run_name'"
-    fi
-    local run_response=$(aws devicefarm schedule-run "${run_params[@]}")
-    echo_info "Run started for $run_platform!"
-    echo_details "Run response: '${run_response}'"
+    echo_details 'Upload successful!'
 }
 
 #=======================================
@@ -170,7 +139,7 @@ else
 	echo_details "* secret_access_key: [EMPTY]"
 fi
 echo_details "* device_farm_project: $device_farm_project"
-echo_details "* test_package_name: $test_package_name"
+echo_details "* test_package_path: $test_package_path"
 echo_details "* test_package_type: $test_package_type"
 echo_details "* aws_region: $aws_region"
 echo
@@ -178,7 +147,7 @@ echo
 validate_required_input "access_key_id" $access_key_id
 validate_required_input "secret_access_key" $secret_access_key
 validate_required_input "device_farm_project" $device_farm_project
-validate_required_input "test_package_name" $test_package_name
+validate_required_input "test_package_path" $test_package_path
 validate_required_input "test_package_type" $test_package_type
 
 if [[ "$aws_region" != "" ]] ; then
@@ -189,7 +158,8 @@ fi
 export AWS_ACCESS_KEY_ID="${access_key_id}"
 export AWS_SECRET_ACCESS_KEY="${secret_access_key}"
 
+set -o nounset
 set -o errexit
 set -o pipefail
 
-echo_info 'Done!'
+device_farm_package_upload

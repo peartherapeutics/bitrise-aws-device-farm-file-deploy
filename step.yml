@@ -44,11 +44,11 @@ inputs:
       summary: ""
       description: "Project ARNs can be obtained using the AWS CLI 'devicefarm list-projects' command."
       is_required: true
-  - test_package_name: ""
+  - test_package_path: "$BITRISE_DEVICE_FARM_TEST_PACKAGE_PATH"
     opts:
-      title: "Test Package Filename"
+      title: "Test Package Path"
       summary: ""
-      description: "Filename of test package, aws-device-farm-runner can be configured to use the latest package with this name."
+      description: "Path to test package. aws-device-farm-runner can be configured to use the latest package with this name."
       is_required: true
   - test_package_type: ""
     opts:
