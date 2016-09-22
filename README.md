@@ -30,6 +30,13 @@ envs:
 - A_SECRET_PARAM_TWO: the value for secret two
 ```
 
+## Testing
+- `bitrise run test`
+ - Note: This test requires additional configuration to pass:
+   1. `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` must be set in `.bitrise.secrets.yml`
+    1. An Amazon device farm project must be set up in the target region, and its ARN must be specified in the `device_farm_project` input (see `step.yml` for more info on obtaining the ARN)
+    1. `upload_file_path` input must be set to the path of any local file
+
 ## How to create your own step
 
 1. Create a new git repository for your step (**don't fork** the *step template*, create a *new* repository)
