@@ -26,18 +26,25 @@ deps:
   - name: awscli
 run_if: ""
 inputs:
-  - access_key_id: ""
+  - access_key_id: "$AWS_ACCESS_KEY"
     opts:
       title: "AWS Access Key"
       summary: ""
       description: ""
       is_required: true
-  - secret_access_key: ""
+  - secret_access_key: "$AWS_SECRET_KEY"
     opts:
       title: "AWS Secret Key"
       summary: ""
       description: ""
       is_required: true
+  - aws_region: "$AWS_REGION"
+    opts:
+      title: "AWS Region"
+      summary: ""
+      description: |
+        If you want to specify a different AWS region. Leave
+        empty to use the default config/env setting.
   - device_farm_project: ""
     opts:
       title: "Device Farm Project ARN"
@@ -56,11 +63,4 @@ inputs:
       summary: ""
       description: "ex. APPIUM_PYTHON_TEST_PACKAGE. See http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Upload.html#devicefarm-Type-Upload-type"
       is_required: true
-  - aws_region: ""
-    opts:
-      title: "AWS Region"
-      summary: ""
-      description: |
-        If you want to specify a different AWS region. Leave
-        empty to use the default config/env setting.
 outputs: []
