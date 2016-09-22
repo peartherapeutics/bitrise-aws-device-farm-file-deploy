@@ -22,8 +22,10 @@ is_skippable: false
 deps:
   brew:
   - name: awscli
+    bin_name: aws
   apt_get:
   - name: awscli
+    bin_name: aws
 run_if: ""
 inputs:
   - access_key_id: ""
