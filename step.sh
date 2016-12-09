@@ -138,9 +138,9 @@ echo_info 'Preparing package upload.'
 
 # Intialize upload
 upload_file_name=$(basename "$upload_file_path")
-create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$upload_file_name" --type="$upload_type" --query='upload.[arn, url]' --output=text)
-upload_arn=$(echo $create_upload_response|cut -d' ' -f1)
-upload_url=$(echo $create_upload_response|cut -d' ' -f2)
+create_upload_response=$(aws devicefarm create-upload --project-arn="$device_farm_project" --name="$upload_file_name" --type="$upload_type" --query='upload.[arn, url]')
+upload_arn=$(echo $create_upload_response | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]')
+upload_url=$(echo $create_upload_response | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]')
 echo_details "Initialized upload of package '$upload_file_path' for package ARN '$upload_arn'"
 
 # Perform upload
