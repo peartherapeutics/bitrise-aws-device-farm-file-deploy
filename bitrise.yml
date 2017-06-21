@@ -51,7 +51,7 @@ workflows:
     envs:
       - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
       - STEP_ID_IN_STEPLIB: aws-device-farm-file-deploy
-      - STEP_GIT_VERION_TAG_TO_SHARE: 0.0.3
+      - STEP_GIT_VERION_TAG_TO_SHARE: 0.0.4
       - STEP_GIT_CLONE_URL: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy.git
     description: |-
       If this is the first time you try to share a Step you should
