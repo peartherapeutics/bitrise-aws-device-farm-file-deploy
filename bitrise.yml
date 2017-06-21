@@ -24,6 +24,17 @@ workflows:
         - upload_file_path: $DEVICE_FARM_UPLOAD_FILE_PATH
         - upload_type: $DEVICE_FARM_UPLOAD_FILE_TYPE
         - aws_region: $AWS_REGION
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -ex
+            if [[ ! -z "$BITRISE_DEVICEFARM_UPLOAD_ARN" ]]; then
+                echo "Got upload ARN: $BITRISE_DEVICEFARM_UPLOAD_ARN"
+            else
+                echo "Did not get upload ARN" 1>&2
+                exit 1
+            fi
 
   # ----------------------------------------------------------------
   # --- workflow to Share this step into a Step Library

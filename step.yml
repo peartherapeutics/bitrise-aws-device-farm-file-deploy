@@ -63,4 +63,9 @@ inputs:
       summary: ""
       description: "ex. `APPIUM_PYTHON_TEST_PACKAGE`. See [Upload.type documentation](http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Upload.html#devicefarm-Type-Upload-type)."
       is_required: true
-outputs: []
+outputs:
+  - BITRISE_DEVICEFARM_UPLOAD_ARN:
+    opts:
+      title: Upload ARN
+      description: |-
+        ARN identifier of successfully uploaded file
