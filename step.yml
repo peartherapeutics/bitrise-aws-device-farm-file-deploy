@@ -1,9 +1,8 @@
 title: "Amazon Device Farm File Deploy"
 summary: "Amazon Device Farm File Deploy"
 description: |-
-  Uploads file (i.e. test package, app data, etc.) to device farm
-
-  This Step requires an Amazon Device Farm registration. To register an account, [click here](https://aws.amazon.com/device-farm/)
+  Uploads file (i.e. test package, app data, etc.) to device farm. Intended to be used with the [aws-device-farm-runner](https://github.com/peartherapeutics/bitrise-aws-device-farm-runner) step.
+  This step requires an Amazon Device Farm registration. [Please read the aws-device-farm-runner wiki for setup instructions](https://github.com/peartherapeutics/bitrise-aws-device-farm-runner/wiki).
 website: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy
 source_code_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy
 support_url: https://github.com/peartherapeutics/bitrise-aws-device-farm-file-deploy/issues
@@ -14,6 +13,7 @@ host_os_tags:
 project_type_tags: []
 type_tags:
 - test
+- deploy
 is_requires_admin_user: false
 is_always_run: false
 is_skippable: false
@@ -30,13 +30,13 @@ inputs:
     opts:
       title: "AWS Access Key"
       summary: ""
-      description: ""
+      description: "Access key for your AWS/IAM user. Define this as a secret environment variable in your workflow."
       is_required: true
   - secret_access_key: "$AWS_SECRET_KEY"
     opts:
       title: "AWS Secret Key"
       summary: ""
-      description: ""
+      description: "Secret key for your AWS/IAM user. Define this as a secret environment variable in your workflow."
       is_required: true
   - aws_region: "$AWS_REGION"
     opts:
@@ -49,18 +49,23 @@ inputs:
     opts:
       title: "Device Farm Project ARN"
       summary: ""
-      description: "Project ARNs can be obtained using the AWS CLI 'devicefarm list-projects' command."
+      description: "Project ARNs can be obtained using the [AWS CLI](https://aws.amazon.com/cli/) `devicefarm list-projects` command."
       is_required: true
   - upload_file_path: ""
     opts:
       title: "Upload File Path"
       summary: ""
-      description: "Path of file to upload. If this is a test package, aws-device-farm-runner can be configured to use the latest package with this name."
+      description: "Path of file to upload. If this is a test package, [aws-device-farm-runner](https://github.com/peartherapeutics/bitrise-aws-device-farm-runner) can be configured to use the latest package with this name."
       is_required: true
   - upload_type: ""
     opts:
       title: "Upload Type"
       summary: ""
-      description: "ex. APPIUM_PYTHON_TEST_PACKAGE. See http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Upload.html#devicefarm-Type-Upload-type"
+      description: "ex. `APPIUM_PYTHON_TEST_PACKAGE`. See [Upload.type documentation](http://docs.aws.amazon.com/devicefarm/latest/APIReference/API_Upload.html#devicefarm-Type-Upload-type)."
       is_required: true
-outputs: []
+outputs:
+  - BITRISE_DEVICEFARM_UPLOAD_ARN:
+    opts:
+      title: Upload ARN
+      description: |-
+        ARN identifier of successfully uploaded file

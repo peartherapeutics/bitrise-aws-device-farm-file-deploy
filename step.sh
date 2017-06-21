@@ -161,4 +161,6 @@ while [ ! "$upload_status" == 'SUCCEEDED' ]; do
     upload_status=$(get_upload_status "$upload_arn")
 done
 
+envman add --key BITRISE_DEVICEFARM_UPLOAD_ARN --value "$upload_arn"
+
 echo_details 'Upload successful!'
