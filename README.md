@@ -1,7 +1,8 @@
 # Amazon Device Farm File Deploy
-Uploads file (i.e. test package, app data, etc.) to device farm.
+Uploads file (i.e. test package, app data, etc.) to device farm. Intended to be used with the [aws-device-farm-runner](https://github.com/peartherapeutics/bitrise-aws-device-farm-runner) step.
 
-This Step requires an Amazon Device Farm registration. To register an account, [click here](https://aws.amazon.com/device-farm/). 
+This Step requires an Amazon Device Farm registration. [Please read the aws-device-farm-runner wiki for setup instructions](https://github.com/peartherapeutics/bitrise-aws-device-farm-runner/wiki).
+
 Please note that this user needs at least access to the DeviceFarm CreateUpload action, so `"devicefarm:CreateUpload"` should be in the user access permissions.
 
 ## How to use this Step
