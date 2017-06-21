@@ -6,7 +6,10 @@ app:
   # define these in your .bitrise.secrets.yml
   - AWS_ACCESS_KEY: $AWS_ACCESS_KEY
   - AWS_SECRET_KEY: $AWS_SECRET_KEY
-  # - BUCKET_REGION: $BUCKET_REGION
+  - AWS_REGION: $AWS_REGION
+  - DEVICE_FARM_PROJECT: $DEVICE_FARM_PROJECT
+  - DEVICE_FARM_UPLOAD_FILE_PATH: $DEVICE_FARM_UPLOAD_FILE_PATH
+  - DEVICE_FARM_UPLOAD_FILE_TYPE: $DEVICE_FARM_UPLOAD_FILE_TYPE
 
 workflows:
   # ----------------------------------------------------------------
@@ -17,10 +20,10 @@ workflows:
         inputs:
         - access_key_id: $AWS_ACCESS_KEY
         - secret_access_key: $AWS_SECRET_KEY
-        - device_farm_project: ""
-        - upload_file_path: ""
-        - upload_type: "APPIUM_PYTHON_TEST_PACKAGE"
-        - aws_region: "us-west-2"
+        - device_farm_project: $DEVICE_FARM_PROJECT
+        - upload_file_path: $DEVICE_FARM_UPLOAD_FILE_PATH
+        - upload_type: $DEVICE_FARM_UPLOAD_FILE_TYPE
+        - aws_region: $AWS_REGION
 
   # ----------------------------------------------------------------
   # --- workflow to Share this step into a Step Library
