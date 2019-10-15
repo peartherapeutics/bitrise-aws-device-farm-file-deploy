@@ -42,9 +42,8 @@ inputs:
     opts:
       title: "AWS Region"
       summary: ""
-      description: |
-        If you want to specify a different AWS region. Leave
-        empty to use the default config/env setting.
+      description: "Region specification for AWS."
+      is_required: true
   - device_farm_project: ""
     opts:
       title: "Device Farm Project ARN"
