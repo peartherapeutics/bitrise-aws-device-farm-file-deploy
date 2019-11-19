@@ -119,12 +119,9 @@ validate_required_input "secret_access_key" $secret_access_key
 validate_required_input "device_farm_project" $device_farm_project
 validate_required_input "upload_file_path" $upload_file_path
 validate_required_input "upload_type" $upload_type
+validate_required_input "aws_region" $aws_region
 
-if [[ "$aws_region" != "" ]] ; then
-	echo_details "AWS region (${aws_region}) specified!"
-	export AWS_DEFAULT_REGION="${aws_region}"
-fi
-
+export AWS_DEFAULT_REGION="${aws_region}"
 export AWS_ACCESS_KEY_ID="${access_key_id}"
 export AWS_SECRET_ACCESS_KEY="${secret_access_key}"
 
