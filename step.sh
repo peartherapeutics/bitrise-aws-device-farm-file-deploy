@@ -154,7 +154,7 @@ while [ ! "$upload_status" == 'SUCCEEDED' ]; do
     fi
 
     echo_details "Upload not yet processed; waiting. (Status=$upload_status)"
-    sleep 10s
+    sleep 10
     upload_status=$(get_upload_status "$upload_arn")
 done
 
